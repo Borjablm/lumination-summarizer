@@ -15,10 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$is_auto = ( 'auto' === $lms_mode );
-$show_url  = $is_auto || 'url' === $lms_mode;
-$show_text = $is_auto || 'text' === $lms_mode;
-$show_file = $is_auto || 'file' === $lms_mode;
+$lms_is_auto  = ( 'auto' === $lms_mode );
+$lms_show_url  = $lms_is_auto || 'url' === $lms_mode;
+$lms_show_text = $lms_is_auto || 'text' === $lms_mode;
+$lms_show_file = $lms_is_auto || 'file' === $lms_mode;
 ?>
 <div class="lms-summarizer"
      data-mode="<?php echo esc_attr( $lms_mode ); ?>"
@@ -38,7 +38,7 @@ $show_file = $is_auto || 'file' === $lms_mode;
 	<!-- Input section -->
 	<div class="lms-input-section">
 
-		<?php if ( $is_auto ) : ?>
+		<?php if ( $lms_is_auto ) : ?>
 		<!-- Mode tabs -->
 		<div class="lms-tabs" role="tablist">
 			<button class="lms-tab lms-tab--active" data-tab="url" role="tab" aria-selected="true">
@@ -53,9 +53,9 @@ $show_file = $is_auto || 'file' === $lms_mode;
 		</div>
 		<?php endif; ?>
 
-		<?php if ( $show_url ) : ?>
+		<?php if ( $lms_show_url ) : ?>
 		<!-- URL input -->
-		<div class="lms-tab-panel lms-tab-panel--url<?php echo ( ! $show_url || ( $is_auto && 'url' !== $lms_mode ) ) ? '' : ''; ?>"
+		<div class="lms-tab-panel lms-tab-panel--url<?php echo ( ! $lms_show_url || ( $lms_is_auto && 'url' !== $lms_mode ) ) ? '' : ''; ?>"
 		     data-panel="url" role="tabpanel">
 			<input type="url"
 			       class="lms-url-input"
@@ -64,9 +64,9 @@ $show_file = $is_auto || 'file' === $lms_mode;
 		</div>
 		<?php endif; ?>
 
-		<?php if ( $show_text ) : ?>
+		<?php if ( $lms_show_text ) : ?>
 		<!-- Text input -->
-		<div class="lms-tab-panel lms-tab-panel--text<?php echo ( $is_auto || 'text' !== $lms_mode ) ? ' lms-hidden' : ''; ?>"
+		<div class="lms-tab-panel lms-tab-panel--text<?php echo ( $lms_is_auto || 'text' !== $lms_mode ) ? ' lms-hidden' : ''; ?>"
 		     data-panel="text" role="tabpanel">
 			<textarea class="lms-text-input"
 			          placeholder="<?php echo esc_attr( 'text' === $lms_mode ? $lms_placeholder : esc_attr__( 'Paste your text here...', 'lumination-summarizer' ) ); ?>"
@@ -75,9 +75,9 @@ $show_file = $is_auto || 'file' === $lms_mode;
 		</div>
 		<?php endif; ?>
 
-		<?php if ( $show_file ) : ?>
+		<?php if ( $lms_show_file ) : ?>
 		<!-- File input -->
-		<div class="lms-tab-panel lms-tab-panel--file<?php echo ( $is_auto || 'file' !== $lms_mode ) ? ' lms-hidden' : ''; ?>"
+		<div class="lms-tab-panel lms-tab-panel--file<?php echo ( $lms_is_auto || 'file' !== $lms_mode ) ? ' lms-hidden' : ''; ?>"
 		     data-panel="file" role="tabpanel">
 			<div class="lms-drop-zone" tabindex="0" role="button"
 			     aria-label="<?php esc_attr_e( 'Drop a PDF here or click to upload', 'lumination-summarizer' ); ?>">

@@ -104,7 +104,7 @@ class Lumination_Summarizer_Ajax {
 				break;
 
 			case 'file':
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- base64 cannot be sanitized with sanitize_text_field.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- base64 data cannot be unslashed/sanitized with sanitize_text_field; sanitize_base64() is applied below.
 				$file_data = isset( $_POST['input_value'] ) ? $_POST['input_value'] : '';
 				if ( empty( $file_data ) ) {
 					wp_send_json_error( array( 'message' => __( 'No file data provided.', 'lumination-summarizer' ) ) );
