@@ -96,6 +96,38 @@ $lms_show_file = $lms_is_auto || 'file' === $lms_mode;
 
 	</div>
 
+	<!-- Options row -->
+	<div class="lms-options">
+		<div class="lms-option-group">
+			<label class="lms-option-label"><?php esc_html_e( 'Output', 'lumination-summarizer' ); ?></label>
+			<div class="lms-pill-group lms-output-pills">
+				<button class="lms-pill<?php echo 'sections' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="sections">
+					<?php esc_html_e( 'Summary', 'lumination-summarizer' ); ?>
+				</button>
+				<button class="lms-pill<?php echo 'raw' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="raw">
+					<?php esc_html_e( 'Short', 'lumination-summarizer' ); ?>
+				</button>
+				<button class="lms-pill<?php echo 'mindmap' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="mindmap">
+					<?php esc_html_e( 'Mindmap', 'lumination-summarizer' ); ?>
+				</button>
+			</div>
+		</div>
+		<div class="lms-option-group">
+			<label class="lms-option-label"><?php esc_html_e( 'Length', 'lumination-summarizer' ); ?></label>
+			<div class="lms-pill-group lms-length-pills">
+				<button class="lms-pill<?php echo 'short' === $lms_summary_length ? ' lms-pill--active' : ''; ?>" data-value="short">
+					<?php esc_html_e( 'Short', 'lumination-summarizer' ); ?>
+				</button>
+				<button class="lms-pill<?php echo 'medium' === $lms_summary_length ? ' lms-pill--active' : ''; ?>" data-value="medium">
+					<?php esc_html_e( 'Medium', 'lumination-summarizer' ); ?>
+				</button>
+				<button class="lms-pill<?php echo 'long' === $lms_summary_length ? ' lms-pill--active' : ''; ?>" data-value="long">
+					<?php esc_html_e( 'Long', 'lumination-summarizer' ); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+
 	<!-- Submit -->
 	<div class="lms-submit-section">
 		<button class="lms-submit-btn" disabled>

@@ -185,6 +185,62 @@
 	font-weight: 500;
 }
 
+/* ── Options row ─────────────────────────────────────────────────────────── */
+
+.lms-options {
+	display: flex;
+	gap: 1.25rem;
+	margin-top: 1rem;
+	flex-wrap: wrap;
+}
+
+.lms-option-group {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.lms-option-label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--lms-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	white-space: nowrap;
+}
+
+.lms-pill-group {
+	display: flex;
+	gap: 0.25rem;
+	background: var(--lms-light-bg);
+	border-radius: 8px;
+	padding: 3px;
+}
+
+.lms-pill {
+	padding: 0.35rem 0.7rem;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--lms-muted);
+	font-size: 0.8rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.lms-pill:hover {
+	color: var(--lms-text);
+}
+
+.lms-pill--active {
+	background: var(--lms-bg);
+	color: var(--lms-primary);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 /* ── Submit button ───────────────────────────────────────────────────────── */
 
 .lms-submit-section {

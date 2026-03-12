@@ -42,6 +42,8 @@
 			dropZone: root.querySelector('.lms-drop-zone'),
 			fileInput: root.querySelector('.lms-file-input'),
 			fileName: root.querySelector('.lms-file-name'),
+			outputPills: root.querySelectorAll('.lms-output-pills .lms-pill'),
+			lengthPills: root.querySelectorAll('.lms-length-pills .lms-pill'),
 			submitBtn: root.querySelector('.lms-submit-btn'),
 			output: root.querySelector('.lms-output'),
 			outputTitle: root.querySelector('.lms-output-title'),
@@ -53,6 +55,7 @@
 		};
 
 		setupTabs(state, els);
+		setupPills(state, els);
 		setupInputListeners(state, els);
 		setupFileUpload(state, els);
 		setupSubmit(state, els);
@@ -79,6 +82,29 @@
 				}
 
 				updateSubmitState(state, els);
+			});
+		}
+	}
+
+	/* ── Option pills (output type + length) ─────────────────────────────── */
+
+	function setupPills(state, els) {
+		setupPillGroup(els.outputPills, function (value) {
+			state.output = value;
+		});
+		setupPillGroup(els.lengthPills, function (value) {
+			state.length = value;
+		});
+	}
+
+	function setupPillGroup(pills, onChange) {
+		for (var i = 0; i < pills.length; i++) {
+			pills[i].addEventListener('click', function () {
+				var value = this.dataset.value;
+				for (var j = 0; j < pills.length; j++) {
+					pills[j].classList.toggle('lms-pill--active', pills[j].dataset.value === value);
+				}
+				onChange(value);
 			});
 		}
 	}
