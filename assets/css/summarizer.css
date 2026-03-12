@@ -2,6 +2,7 @@
  * Lumination Summarizer — Front-end Styles
  *
  * CSS prefix: lms-  (Lumination Summarizer)
+ * Inspired by smmry.com — clean, modern, lavender-accented aesthetic.
  *
  * @package LuminationSummarizer
  * @since   1.0.0
@@ -12,24 +13,28 @@
 .lms-summarizer {
 	--lms-primary: #6C5CE7;
 	--lms-primary-hover: #5a4bd5;
+	--lms-primary-light: rgba(108, 92, 231, 0.08);
+	--lms-primary-glow: rgba(108, 92, 231, 0.15);
 	--lms-btn-text: #fff;
-	--lms-bg: #fff;
-	--lms-text: #222;
-	--lms-radius: 12px;
-	--lms-border: #e0e0e0;
-	--lms-muted: #666;
-	--lms-light-bg: #f8f9fa;
+	--lms-bg: #ffffff;
+	--lms-text: #1a1a2e;
+	--lms-radius: 16px;
+	--lms-border: #e8e5f0;
+	--lms-muted: #8b85a1;
+	--lms-light-bg: #f5f3ff;
+	--lms-surface: #faf9fe;
 
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
 		Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	background: var(--lms-bg);
+	background: linear-gradient(135deg, var(--lms-surface) 0%, var(--lms-bg) 100%);
 	color: var(--lms-text);
 	border: 1px solid var(--lms-border);
 	border-radius: var(--lms-radius);
-	padding: 1.5rem;
+	padding: 2rem;
 	max-width: 720px;
-	margin: 1.5rem auto;
+	margin: 2rem auto;
 	box-sizing: border-box;
+	box-shadow: 0 4px 24px rgba(108, 92, 231, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .lms-summarizer *,
@@ -47,97 +52,113 @@
 /* ── Header ──────────────────────────────────────────────────────────────── */
 
 .lms-header {
-	margin-bottom: 1.25rem;
+	margin-bottom: 1.5rem;
+	text-align: center;
 }
 
 .lms-title {
-	font-size: 1.25rem;
-	font-weight: 600;
-	margin: 0 0 0.25rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0 0 0.375rem;
 	color: var(--lms-text);
+	letter-spacing: -0.01em;
 }
 
 .lms-description {
-	font-size: 0.9rem;
+	font-size: 0.95rem;
 	color: var(--lms-muted);
 	margin: 0;
+	line-height: 1.5;
 }
 
-/* ── Tabs ────────────────────────────────────────────────────────────────── */
+/* ── Tabs (input mode) ──────────────────────────────────────────────────── */
 
 .lms-tabs {
 	display: flex;
-	gap: 0.375rem;
-	margin-bottom: 1rem;
+	gap: 0;
+	margin-bottom: 1.25rem;
+	background: var(--lms-light-bg);
+	border-radius: 10px;
+	padding: 4px;
 }
 
 .lms-tab {
-	padding: 0.5rem 1rem;
-	border: 1px solid var(--lms-border);
-	border-radius: 999px;
-	background: var(--lms-bg);
+	flex: 1;
+	padding: 0.6rem 1rem;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
 	color: var(--lms-muted);
-	font-size: 0.85rem;
+	font-size: 0.875rem;
 	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 	line-height: 1;
+	text-align: center;
 }
 
 .lms-tab:hover {
-	border-color: var(--lms-primary);
-	color: var(--lms-primary);
+	color: var(--lms-text);
 }
 
 .lms-tab--active {
-	background: var(--lms-primary);
-	border-color: var(--lms-primary);
-	color: var(--lms-btn-text);
+	background: var(--lms-bg);
+	color: var(--lms-primary);
+	font-weight: 600;
+	box-shadow: 0 1px 4px rgba(108, 92, 231, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .lms-tab--active:hover {
-	background: var(--lms-primary-hover);
-	border-color: var(--lms-primary-hover);
-	color: var(--lms-btn-text);
+	color: var(--lms-primary);
 }
 
 /* ── Input panels ────────────────────────────────────────────────────────── */
 
 .lms-url-input {
 	width: 100%;
-	padding: 0.75rem 1rem;
-	border: 1px solid var(--lms-border);
-	border-radius: 8px;
+	padding: 0.875rem 1rem;
+	border: 1.5px solid var(--lms-border);
+	border-radius: 10px;
 	font-size: 0.95rem;
 	color: var(--lms-text);
 	background: var(--lms-bg);
-	transition: border-color 0.15s ease;
+	transition: all 0.2s ease;
 }
 
 .lms-url-input:focus {
 	outline: none;
 	border-color: var(--lms-primary);
-	box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+	box-shadow: 0 0 0 4px var(--lms-primary-glow);
+}
+
+.lms-url-input::placeholder {
+	color: var(--lms-muted);
+	opacity: 0.7;
 }
 
 .lms-text-input {
 	width: 100%;
-	padding: 0.75rem 1rem;
-	border: 1px solid var(--lms-border);
-	border-radius: 8px;
+	padding: 0.875rem 1rem;
+	border: 1.5px solid var(--lms-border);
+	border-radius: 10px;
 	font-size: 0.95rem;
 	color: var(--lms-text);
 	background: var(--lms-bg);
 	resize: vertical;
 	min-height: 120px;
 	font-family: inherit;
-	transition: border-color 0.15s ease;
+	transition: all 0.2s ease;
 }
 
 .lms-text-input:focus {
 	outline: none;
 	border-color: var(--lms-primary);
-	box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+	box-shadow: 0 0 0 4px var(--lms-primary-glow);
+}
+
+.lms-text-input::placeholder {
+	color: var(--lms-muted);
+	opacity: 0.7;
 }
 
 /* ── Drop zone ───────────────────────────────────────────────────────────── */
@@ -147,29 +168,31 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 0.5rem;
-	padding: 2rem 1rem;
+	gap: 0.625rem;
+	padding: 2.5rem 1.5rem;
 	border: 2px dashed var(--lms-border);
-	border-radius: 8px;
-	background: var(--lms-light-bg);
+	border-radius: 12px;
+	background: var(--lms-surface);
 	cursor: pointer;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 	text-align: center;
 }
 
 .lms-drop-zone:hover,
 .lms-drop-zone:focus-visible {
 	border-color: var(--lms-primary);
-	background: rgba(108, 92, 231, 0.04);
+	background: var(--lms-primary-light);
 }
 
 .lms-drop-zone.lms-dragover {
 	border-color: var(--lms-primary);
-	background: rgba(108, 92, 231, 0.08);
+	background: var(--lms-primary-light);
+	transform: scale(1.01);
 }
 
 .lms-drop-icon {
-	color: var(--lms-muted);
+	color: var(--lms-primary);
+	opacity: 0.5;
 }
 
 .lms-drop-text {
@@ -182,15 +205,16 @@
 	font-size: 0.85rem;
 	color: var(--lms-primary);
 	margin: 0.5rem 0 0;
-	font-weight: 500;
+	font-weight: 600;
 }
 
 /* ── Options row ─────────────────────────────────────────────────────────── */
 
 .lms-options {
 	display: flex;
-	gap: 1.25rem;
-	margin-top: 1rem;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 1.25rem;
 	flex-wrap: wrap;
 }
 
@@ -201,24 +225,25 @@
 }
 
 .lms-option-label {
-	font-size: 0.8rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	color: var(--lms-muted);
 	text-transform: uppercase;
-	letter-spacing: 0.03em;
+	letter-spacing: 0.05em;
 	white-space: nowrap;
 }
 
 .lms-pill-group {
 	display: flex;
-	gap: 0.25rem;
+	gap: 0;
 	background: var(--lms-light-bg);
 	border-radius: 8px;
 	padding: 3px;
+	border: 1px solid var(--lms-border);
 }
 
 .lms-pill {
-	padding: 0.35rem 0.7rem;
+	padding: 0.375rem 0.75rem;
 	border: none;
 	border-radius: 6px;
 	background: transparent;
@@ -226,8 +251,8 @@
 	font-size: 0.8rem;
 	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.15s ease;
-	line-height: 1;
+	transition: all 0.2s ease;
+	line-height: 1.2;
 	white-space: nowrap;
 }
 
@@ -238,13 +263,14 @@
 .lms-pill--active {
 	background: var(--lms-bg);
 	color: var(--lms-primary);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	font-weight: 600;
+	box-shadow: 0 1px 3px rgba(108, 92, 231, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* ── Submit button ───────────────────────────────────────────────────────── */
 
 .lms-submit-section {
-	margin-top: 1rem;
+	margin-top: 1.25rem;
 }
 
 .lms-submit-btn {
@@ -252,24 +278,34 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	padding: 0.75rem 1.5rem;
-	background: var(--lms-primary);
+	padding: 0.875rem 1.5rem;
+	background: linear-gradient(135deg, var(--lms-primary) 0%, var(--lms-primary-hover) 100%);
 	color: var(--lms-btn-text);
 	border: none;
-	border-radius: 8px;
+	border-radius: 10px;
 	font-size: 1rem;
 	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
+	letter-spacing: 0.01em;
 }
 
 .lms-submit-btn:hover:not(:disabled) {
-	background: var(--lms-primary-hover);
+	background: linear-gradient(135deg, var(--lms-primary-hover) 0%, #4a3ab5 100%);
+	box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+	transform: translateY(-1px);
+}
+
+.lms-submit-btn:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
 }
 
 .lms-submit-btn:disabled {
-	opacity: 0.5;
+	opacity: 0.45;
 	cursor: not-allowed;
+	box-shadow: none;
 }
 
 /* ── Loading ─────────────────────────────────────────────────────────────── */
@@ -278,14 +314,14 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.75rem;
-	padding: 2rem 0;
+	gap: 1rem;
+	padding: 2.5rem 0;
 }
 
 .lms-spinner {
-	width: 32px;
-	height: 32px;
-	border: 3px solid var(--lms-border);
+	width: 36px;
+	height: 36px;
+	border: 3px solid var(--lms-light-bg);
 	border-top-color: var(--lms-primary);
 	border-radius: 50%;
 	animation: lms-spin 0.7s linear infinite;
@@ -299,14 +335,15 @@
 	font-size: 0.9rem;
 	color: var(--lms-muted);
 	margin: 0;
+	font-weight: 500;
 }
 
 /* ── Output ──────────────────────────────────────────────────────────────── */
 
 .lms-output {
-	margin-top: 1.5rem;
-	border-top: 1px solid var(--lms-border);
-	padding-top: 1.25rem;
+	margin-top: 1.75rem;
+	padding-top: 1.5rem;
+	border-top: 1.5px solid var(--lms-border);
 }
 
 .lms-output-header {
@@ -317,97 +354,108 @@
 }
 
 .lms-output-title {
-	font-size: 1.1rem;
-	font-weight: 600;
+	font-size: 1.15rem;
+	font-weight: 700;
 	margin: 0;
 	color: var(--lms-text);
+	letter-spacing: -0.01em;
 }
 
 .lms-copy-btn {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.375rem;
-	padding: 0.375rem 0.75rem;
-	border: 1px solid var(--lms-border);
-	border-radius: 6px;
+	padding: 0.4rem 0.75rem;
+	border: 1.5px solid var(--lms-border);
+	border-radius: 8px;
 	background: var(--lms-bg);
 	color: var(--lms-muted);
 	font-size: 0.8rem;
+	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 	white-space: nowrap;
 }
 
 .lms-copy-btn:hover {
 	border-color: var(--lms-primary);
 	color: var(--lms-primary);
+	background: var(--lms-primary-light);
 }
 
 .lms-copy-btn.lms-copied {
 	border-color: #27ae60;
 	color: #27ae60;
+	background: rgba(39, 174, 96, 0.06);
 }
 
 /* ── Output content (rendered markdown) ──────────────────────────────────── */
 
 .lms-output-content {
 	font-size: 0.95rem;
-	line-height: 1.7;
+	line-height: 1.75;
+	color: var(--lms-text);
 }
 
 .lms-output-content h1,
 .lms-output-content h2,
 .lms-output-content h3,
 .lms-output-content h4 {
-	margin: 1.25rem 0 0.5rem;
-	font-weight: 600;
+	margin: 1.5rem 0 0.5rem;
+	font-weight: 700;
 	color: var(--lms-text);
+	letter-spacing: -0.01em;
 }
 
-.lms-output-content h1 { font-size: 1.3rem; }
+.lms-output-content h1 { font-size: 1.35rem; }
 .lms-output-content h2 { font-size: 1.15rem; }
 .lms-output-content h3 { font-size: 1.05rem; }
 .lms-output-content h4 { font-size: 0.95rem; }
 
 .lms-output-content p {
-	margin: 0.5rem 0;
+	margin: 0.625rem 0;
 }
 
 .lms-output-content ul,
 .lms-output-content ol {
-	margin: 0.5rem 0;
+	margin: 0.625rem 0;
 	padding-left: 1.5rem;
 }
 
 .lms-output-content li {
-	margin: 0.25rem 0;
+	margin: 0.3rem 0;
 }
 
 .lms-output-content blockquote {
-	margin: 0.75rem 0;
-	padding: 0.5rem 1rem;
+	margin: 1rem 0;
+	padding: 0.75rem 1.25rem;
 	border-left: 3px solid var(--lms-primary);
 	background: var(--lms-light-bg);
+	border-radius: 0 8px 8px 0;
 	color: var(--lms-muted);
+	font-style: italic;
 }
 
 .lms-output-content code {
 	background: var(--lms-light-bg);
-	padding: 0.15rem 0.35rem;
-	border-radius: 4px;
+	padding: 0.2rem 0.4rem;
+	border-radius: 5px;
 	font-size: 0.88em;
+	color: var(--lms-primary);
 }
 
 .lms-output-content pre {
 	background: var(--lms-light-bg);
-	padding: 1rem;
-	border-radius: 8px;
+	padding: 1.25rem;
+	border-radius: 10px;
 	overflow-x: auto;
+	border: 1px solid var(--lms-border);
 }
 
 .lms-output-content pre code {
 	background: none;
 	padding: 0;
+	color: var(--lms-text);
 }
 
 /* ── Mindmap ─────────────────────────────────────────────────────────────── */
@@ -415,9 +463,10 @@
 .lms-mindmap-container {
 	width: 100%;
 	min-height: 400px;
-	border: 1px solid var(--lms-border);
-	border-radius: 8px;
+	border: 1.5px solid var(--lms-border);
+	border-radius: 12px;
 	overflow: hidden;
+	background: var(--lms-bg);
 }
 
 .lms-mindmap-container svg {
@@ -429,8 +478,13 @@
 
 @media (max-width: 480px) {
 	.lms-summarizer {
-		padding: 1rem;
+		padding: 1.25rem;
 		margin: 1rem 0.5rem;
+		border-radius: 12px;
+	}
+
+	.lms-title {
+		font-size: 1.25rem;
 	}
 
 	.lms-tabs {
@@ -438,8 +492,16 @@
 	}
 
 	.lms-tab {
-		flex: 1;
-		text-align: center;
 		min-width: 0;
+	}
+
+	.lms-options {
+		gap: 0.75rem;
+	}
+
+	.lms-option-group {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
 	}
 }
