@@ -1,0 +1,389 @@
+/**
+ * Lumination Summarizer — Front-end Styles
+ *
+ * CSS prefix: lms-  (Lumination Summarizer)
+ *
+ * @package LuminationSummarizer
+ * @since   1.0.0
+ */
+
+/* ── Variables & wrapper ─────────────────────────────────────────────────── */
+
+.lms-summarizer {
+	--lms-primary: #6C5CE7;
+	--lms-primary-hover: #5a4bd5;
+	--lms-btn-text: #fff;
+	--lms-bg: #fff;
+	--lms-text: #222;
+	--lms-radius: 12px;
+	--lms-border: #e0e0e0;
+	--lms-muted: #666;
+	--lms-light-bg: #f8f9fa;
+
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+		Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	background: var(--lms-bg);
+	color: var(--lms-text);
+	border: 1px solid var(--lms-border);
+	border-radius: var(--lms-radius);
+	padding: 1.5rem;
+	max-width: 720px;
+	margin: 1.5rem auto;
+	box-sizing: border-box;
+}
+
+.lms-summarizer *,
+.lms-summarizer *::before,
+.lms-summarizer *::after {
+	box-sizing: border-box;
+}
+
+/* ── Utility ─────────────────────────────────────────────────────────────── */
+
+.lms-hidden {
+	display: none !important;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+.lms-header {
+	margin-bottom: 1.25rem;
+}
+
+.lms-title {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin: 0 0 0.25rem;
+	color: var(--lms-text);
+}
+
+.lms-description {
+	font-size: 0.9rem;
+	color: var(--lms-muted);
+	margin: 0;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+
+.lms-tabs {
+	display: flex;
+	gap: 0.375rem;
+	margin-bottom: 1rem;
+}
+
+.lms-tab {
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--lms-border);
+	border-radius: 999px;
+	background: var(--lms-bg);
+	color: var(--lms-muted);
+	font-size: 0.85rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	line-height: 1;
+}
+
+.lms-tab:hover {
+	border-color: var(--lms-primary);
+	color: var(--lms-primary);
+}
+
+.lms-tab--active {
+	background: var(--lms-primary);
+	border-color: var(--lms-primary);
+	color: var(--lms-btn-text);
+}
+
+.lms-tab--active:hover {
+	background: var(--lms-primary-hover);
+	border-color: var(--lms-primary-hover);
+	color: var(--lms-btn-text);
+}
+
+/* ── Input panels ────────────────────────────────────────────────────────── */
+
+.lms-url-input {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--lms-border);
+	border-radius: 8px;
+	font-size: 0.95rem;
+	color: var(--lms-text);
+	background: var(--lms-bg);
+	transition: border-color 0.15s ease;
+}
+
+.lms-url-input:focus {
+	outline: none;
+	border-color: var(--lms-primary);
+	box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.lms-text-input {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--lms-border);
+	border-radius: 8px;
+	font-size: 0.95rem;
+	color: var(--lms-text);
+	background: var(--lms-bg);
+	resize: vertical;
+	min-height: 120px;
+	font-family: inherit;
+	transition: border-color 0.15s ease;
+}
+
+.lms-text-input:focus {
+	outline: none;
+	border-color: var(--lms-primary);
+	box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+/* ── Drop zone ───────────────────────────────────────────────────────────── */
+
+.lms-drop-zone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 2rem 1rem;
+	border: 2px dashed var(--lms-border);
+	border-radius: 8px;
+	background: var(--lms-light-bg);
+	cursor: pointer;
+	transition: all 0.15s ease;
+	text-align: center;
+}
+
+.lms-drop-zone:hover,
+.lms-drop-zone:focus-visible {
+	border-color: var(--lms-primary);
+	background: rgba(108, 92, 231, 0.04);
+}
+
+.lms-drop-zone.lms-dragover {
+	border-color: var(--lms-primary);
+	background: rgba(108, 92, 231, 0.08);
+}
+
+.lms-drop-icon {
+	color: var(--lms-muted);
+}
+
+.lms-drop-text {
+	font-size: 0.9rem;
+	color: var(--lms-muted);
+	margin: 0;
+}
+
+.lms-file-name {
+	font-size: 0.85rem;
+	color: var(--lms-primary);
+	margin: 0.5rem 0 0;
+	font-weight: 500;
+}
+
+/* ── Submit button ───────────────────────────────────────────────────────── */
+
+.lms-submit-section {
+	margin-top: 1rem;
+}
+
+.lms-submit-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 0.75rem 1.5rem;
+	background: var(--lms-primary);
+	color: var(--lms-btn-text);
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.lms-submit-btn:hover:not(:disabled) {
+	background: var(--lms-primary-hover);
+}
+
+.lms-submit-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ── Loading ─────────────────────────────────────────────────────────────── */
+
+.lms-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 2rem 0;
+}
+
+.lms-spinner {
+	width: 32px;
+	height: 32px;
+	border: 3px solid var(--lms-border);
+	border-top-color: var(--lms-primary);
+	border-radius: 50%;
+	animation: lms-spin 0.7s linear infinite;
+}
+
+@keyframes lms-spin {
+	to { transform: rotate(360deg); }
+}
+
+.lms-loading-text {
+	font-size: 0.9rem;
+	color: var(--lms-muted);
+	margin: 0;
+}
+
+/* ── Output ──────────────────────────────────────────────────────────────── */
+
+.lms-output {
+	margin-top: 1.5rem;
+	border-top: 1px solid var(--lms-border);
+	padding-top: 1.25rem;
+}
+
+.lms-output-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.lms-output-title {
+	font-size: 1.1rem;
+	font-weight: 600;
+	margin: 0;
+	color: var(--lms-text);
+}
+
+.lms-copy-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.375rem 0.75rem;
+	border: 1px solid var(--lms-border);
+	border-radius: 6px;
+	background: var(--lms-bg);
+	color: var(--lms-muted);
+	font-size: 0.8rem;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	white-space: nowrap;
+}
+
+.lms-copy-btn:hover {
+	border-color: var(--lms-primary);
+	color: var(--lms-primary);
+}
+
+.lms-copy-btn.lms-copied {
+	border-color: #27ae60;
+	color: #27ae60;
+}
+
+/* ── Output content (rendered markdown) ──────────────────────────────────── */
+
+.lms-output-content {
+	font-size: 0.95rem;
+	line-height: 1.7;
+}
+
+.lms-output-content h1,
+.lms-output-content h2,
+.lms-output-content h3,
+.lms-output-content h4 {
+	margin: 1.25rem 0 0.5rem;
+	font-weight: 600;
+	color: var(--lms-text);
+}
+
+.lms-output-content h1 { font-size: 1.3rem; }
+.lms-output-content h2 { font-size: 1.15rem; }
+.lms-output-content h3 { font-size: 1.05rem; }
+.lms-output-content h4 { font-size: 0.95rem; }
+
+.lms-output-content p {
+	margin: 0.5rem 0;
+}
+
+.lms-output-content ul,
+.lms-output-content ol {
+	margin: 0.5rem 0;
+	padding-left: 1.5rem;
+}
+
+.lms-output-content li {
+	margin: 0.25rem 0;
+}
+
+.lms-output-content blockquote {
+	margin: 0.75rem 0;
+	padding: 0.5rem 1rem;
+	border-left: 3px solid var(--lms-primary);
+	background: var(--lms-light-bg);
+	color: var(--lms-muted);
+}
+
+.lms-output-content code {
+	background: var(--lms-light-bg);
+	padding: 0.15rem 0.35rem;
+	border-radius: 4px;
+	font-size: 0.88em;
+}
+
+.lms-output-content pre {
+	background: var(--lms-light-bg);
+	padding: 1rem;
+	border-radius: 8px;
+	overflow-x: auto;
+}
+
+.lms-output-content pre code {
+	background: none;
+	padding: 0;
+}
+
+/* ── Mindmap ─────────────────────────────────────────────────────────────── */
+
+.lms-mindmap-container {
+	width: 100%;
+	min-height: 400px;
+	border: 1px solid var(--lms-border);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.lms-mindmap-container svg {
+	width: 100%;
+	height: 100%;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+	.lms-summarizer {
+		padding: 1rem;
+		margin: 1rem 0.5rem;
+	}
+
+	.lms-tabs {
+		flex-wrap: wrap;
+	}
+
+	.lms-tab {
+		flex: 1;
+		text-align: center;
+		min-width: 0;
+	}
+}
