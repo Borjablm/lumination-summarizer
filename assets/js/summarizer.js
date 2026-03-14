@@ -50,6 +50,7 @@
 			outputContent: root.querySelector('.lms-output-content'),
 			mindmapContainer: root.querySelector('.lms-mindmap-container'),
 			copyBtn: root.querySelector('.lms-copy-btn'),
+			downloadBtn: root.querySelector('.lms-download-btn'),
 			fullscreenBtn: root.querySelector('.lms-fullscreen-btn'),
 			loading: root.querySelector('.lms-loading'),
 			loadingText: root.querySelector('.lms-loading-text')
@@ -62,6 +63,7 @@
 		setupSubmit(state, els);
 		setupCopy(state, els);
 		setupFullscreen(state, els);
+		setupDownload(state, els);
 	}
 
 	/* ── Tabs ────────────────────────────────────────────────────────────── */
@@ -287,8 +289,9 @@
 
 		var isMindmap = data.output_type === 'mindmap';
 
-		// Show copy for text outputs, fullscreen for mindmaps.
+		// Show copy for text outputs, fullscreen + download for mindmaps.
 		els.copyBtn.classList.toggle('lms-hidden', isMindmap);
+		els.downloadBtn.classList.toggle('lms-hidden', !isMindmap);
 		els.fullscreenBtn.classList.toggle('lms-hidden', !isMindmap);
 
 		if (isMindmap) {
@@ -440,6 +443,16 @@
 		var label = els.fullscreenBtn.querySelector('span');
 		if (label) label.textContent = cfg.i18n.exitFullscreen || 'Exit';
 
+		// Inject close button inside the container.
+		var closeBtn = document.createElement('button');
+		closeBtn.className = 'lms-fullscreen-close';
+		closeBtn.innerHTML = '&times;';
+		closeBtn.title = cfg.i18n.exitFullscreen || 'Exit';
+		closeBtn.addEventListener('click', function () {
+			exitFullscreen(els);
+		});
+		els.mindmapContainer.appendChild(closeBtn);
+
 		// Resize SVG to fill viewport.
 		var svg = els.mindmapContainer.querySelector('svg');
 		if (svg) {
@@ -454,10 +467,74 @@
 		var label = els.fullscreenBtn.querySelector('span');
 		if (label) label.textContent = cfg.i18n.fullscreen || 'Full screen';
 
+		// Remove the injected close button.
+		var closeBtn = els.mindmapContainer.querySelector('.lms-fullscreen-close');
+		if (closeBtn) closeBtn.remove();
+
 		var svg = els.mindmapContainer.querySelector('svg');
 		if (svg) {
 			svg.style.height = '450px';
 		}
+	}
+
+	/* ── Download mindmap as PNG ─────────────────────────────────────────── */
+
+	function setupDownload(state, els) {
+		if (!els.downloadBtn || !els.mindmapContainer) return;
+
+		els.downloadBtn.addEventListener('click', function () {
+			var svg = els.mindmapContainer.querySelector('svg');
+			if (!svg) return;
+
+			var label = els.downloadBtn.querySelector('span');
+			if (label) label.textContent = cfg.i18n.downloading || 'Saving...';
+
+			// Serialize SVG with inline styles.
+			var clone = svg.cloneNode(true);
+			clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+			var svgData = new XMLSerializer().serializeToString(clone);
+			var svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+			var url = URL.createObjectURL(svgBlob);
+
+			var img = new Image();
+			img.onload = function () {
+				// Use 2x scale for crisp output.
+				var scale = 2;
+				var canvas = document.createElement('canvas');
+				canvas.width = img.width * scale;
+				canvas.height = img.height * scale;
+
+				var ctx = canvas.getContext('2d');
+				ctx.fillStyle = '#ffffff';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				ctx.scale(scale, scale);
+				ctx.drawImage(img, 0, 0);
+
+				URL.revokeObjectURL(url);
+
+				canvas.toBlob(function (blob) {
+					var a = document.createElement('a');
+					a.href = URL.createObjectURL(blob);
+					a.download = 'mindmap.png';
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+					URL.revokeObjectURL(a.href);
+
+					if (label) label.textContent = cfg.i18n.download || 'Download';
+				}, 'image/png');
+			};
+
+			img.onerror = function () {
+				URL.revokeObjectURL(url);
+				if (label) label.textContent = cfg.i18n.download || 'Download';
+			};
+
+			img.width = svg.clientWidth || svg.getBoundingClientRect().width;
+			img.height = svg.clientHeight || svg.getBoundingClientRect().height;
+			img.src = url;
+		});
 	}
 
 	/* ── Error display ───────────────────────────────────────────────────── */

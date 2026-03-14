@@ -147,6 +147,14 @@ $lms_show_file = $lms_is_auto || 'file' === $lms_mode;
 					</svg>
 					<span><?php esc_html_e( 'Copy', 'lumination-summarizer' ); ?></span>
 				</button>
+				<button class="lms-download-btn lms-hidden" title="<?php esc_attr_e( 'Download as image', 'lumination-summarizer' ); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="7 10 12 15 17 10"></polyline>
+						<line x1="12" y1="15" x2="12" y2="3"></line>
+					</svg>
+					<span><?php esc_html_e( 'Download', 'lumination-summarizer' ); ?></span>
+				</button>
 				<button class="lms-fullscreen-btn lms-hidden" title="<?php esc_attr_e( 'Full screen', 'lumination-summarizer' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 						<polyline points="15 3 21 3 21 9"></polyline>
