@@ -207,7 +207,9 @@ class Lumination_Summarizer {
 				'copy'          => __( 'Copy', 'lumination-summarizer' ),
 				'dropPdf'       => __( 'Drop a PDF here or click to upload', 'lumination-summarizer' ),
 				'fileTooBig'    => __( 'File must be under 10 MB.', 'lumination-summarizer' ),
-				'invalidType'   => __( 'Only PDF files are accepted.', 'lumination-summarizer' ),
+				'invalidType'    => __( 'Only PDF files are accepted.', 'lumination-summarizer' ),
+				'fullscreen'     => __( 'Full screen', 'lumination-summarizer' ),
+				'exitFullscreen' => __( 'Exit', 'lumination-summarizer' ),
 			),
 		) );
 	}

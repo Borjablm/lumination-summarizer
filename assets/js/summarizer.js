@@ -50,6 +50,7 @@
 			outputContent: root.querySelector('.lms-output-content'),
 			mindmapContainer: root.querySelector('.lms-mindmap-container'),
 			copyBtn: root.querySelector('.lms-copy-btn'),
+			fullscreenBtn: root.querySelector('.lms-fullscreen-btn'),
 			loading: root.querySelector('.lms-loading'),
 			loadingText: root.querySelector('.lms-loading-text')
 		};
@@ -60,6 +61,7 @@
 		setupFileUpload(state, els);
 		setupSubmit(state, els);
 		setupCopy(state, els);
+		setupFullscreen(state, els);
 	}
 
 	/* ── Tabs ────────────────────────────────────────────────────────────── */
@@ -283,7 +285,13 @@
 			els.outputTitle.classList.add('lms-hidden');
 		}
 
-		if (data.output_type === 'mindmap') {
+		var isMindmap = data.output_type === 'mindmap';
+
+		// Show copy for text outputs, fullscreen for mindmaps.
+		els.copyBtn.classList.toggle('lms-hidden', isMindmap);
+		els.fullscreenBtn.classList.toggle('lms-hidden', !isMindmap);
+
+		if (isMindmap) {
 			els.outputContent.classList.add('lms-hidden');
 			els.mindmapContainer.classList.remove('lms-hidden');
 			renderMindmap(data.summary, els.mindmapContainer);
@@ -403,6 +411,53 @@
 				}
 			});
 		});
+	}
+
+	/* ── Fullscreen mindmap ──────────────────────────────────────────────── */
+
+	function setupFullscreen(state, els) {
+		if (!els.fullscreenBtn || !els.mindmapContainer) return;
+
+		els.fullscreenBtn.addEventListener('click', function () {
+			if (els.mindmapContainer.classList.contains('lms-mindmap-fullscreen')) {
+				exitFullscreen(els);
+			} else {
+				enterFullscreen(els);
+			}
+		});
+
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && els.mindmapContainer.classList.contains('lms-mindmap-fullscreen')) {
+				exitFullscreen(els);
+			}
+		});
+	}
+
+	function enterFullscreen(els) {
+		els.mindmapContainer.classList.add('lms-mindmap-fullscreen');
+		els.fullscreenBtn.classList.add('lms-fullscreen-active');
+
+		var label = els.fullscreenBtn.querySelector('span');
+		if (label) label.textContent = cfg.i18n.exitFullscreen || 'Exit';
+
+		// Resize SVG to fill viewport.
+		var svg = els.mindmapContainer.querySelector('svg');
+		if (svg) {
+			svg.style.height = '100vh';
+		}
+	}
+
+	function exitFullscreen(els) {
+		els.mindmapContainer.classList.remove('lms-mindmap-fullscreen');
+		els.fullscreenBtn.classList.remove('lms-fullscreen-active');
+
+		var label = els.fullscreenBtn.querySelector('span');
+		if (label) label.textContent = cfg.i18n.fullscreen || 'Full screen';
+
+		var svg = els.mindmapContainer.querySelector('svg');
+		if (svg) {
+			svg.style.height = '450px';
+		}
 	}
 
 	/* ── Error display ───────────────────────────────────────────────────── */

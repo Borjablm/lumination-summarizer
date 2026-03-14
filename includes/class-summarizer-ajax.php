@@ -225,17 +225,17 @@ class Lumination_Summarizer_Ajax {
 	}
 
 	/**
-	 * Extract text from a base64-encoded PDF via the upload-solve endpoint.
+	 * Extract text from a base64-encoded PDF via the material-to-text endpoint.
 	 *
 	 * @param  string $base64_data Sanitised base64 string.
 	 * @return string|WP_Error Extracted text or error.
 	 */
 	private static function extract_from_pdf( $base64_data ) {
 		$result = Lumination_Core_API::request(
-			'/lumination-ai/api/v1/features/upload-solve/solve-problem',
+			'/api/material-to-text',
 			array(
-				'resized_img_attachment_b64' => $base64_data,
-				'text_input'                 => 'Extract all the text content from this PDF document. Return only the extracted text, nothing else.',
+				'content'      => $base64_data,
+				'content_type' => 'application/pdf',
 			),
 			'lumination-summarizer-extract'
 		);
@@ -244,14 +244,12 @@ class Lumination_Summarizer_Ajax {
 			return new \WP_Error( 'pdf_extract_failed', __( 'Could not extract text from the PDF.', 'lumination-summarizer' ) );
 		}
 
-		$text = '';
-		if ( isset( $result['output']['answer'] ) ) {
-			$text = $result['output']['answer'];
-		} elseif ( isset( $result['response']['response'] ) ) {
-			$text = $result['response']['response'];
-		} elseif ( isset( $result['response']['content'] ) ) {
-			$text = $result['response']['content'];
+		if ( isset( $result['success'] ) && false === $result['success'] ) {
+			$err_msg = isset( $result['error'] ) ? $result['error'] : __( 'PDF processing failed.', 'lumination-summarizer' );
+			return new \WP_Error( 'pdf_extract_failed', $err_msg );
 		}
+
+		$text = isset( $result['text'] ) ? $result['text'] : '';
 
 		return mb_substr( trim( $text ), 0, self::MAX_CONTEXT_LENGTH );
 	}
