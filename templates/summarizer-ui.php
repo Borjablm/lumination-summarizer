@@ -99,13 +99,13 @@ $lms_show_file = $lms_is_auto || 'file' === $lms_mode;
 	<!-- Options row -->
 	<div class="lms-options">
 		<div class="lms-option-group">
-			<label class="lms-option-label"><?php esc_html_e( 'Output', 'lumination-summarizer' ); ?></label>
+			<label class="lms-option-label"><?php esc_html_e( 'Format', 'lumination-summarizer' ); ?></label>
 			<div class="lms-pill-group lms-output-pills">
 				<button class="lms-pill<?php echo 'sections' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="sections">
-					<?php esc_html_e( 'Summary', 'lumination-summarizer' ); ?>
+					<?php esc_html_e( 'Detailed', 'lumination-summarizer' ); ?>
 				</button>
 				<button class="lms-pill<?php echo 'raw' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="raw">
-					<?php esc_html_e( 'Short', 'lumination-summarizer' ); ?>
+					<?php esc_html_e( 'Concise', 'lumination-summarizer' ); ?>
 				</button>
 				<button class="lms-pill<?php echo 'mindmap' === $lms_output ? ' lms-pill--active' : ''; ?>" data-value="mindmap">
 					<?php esc_html_e( 'Mindmap', 'lumination-summarizer' ); ?>

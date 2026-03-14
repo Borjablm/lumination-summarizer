@@ -341,8 +341,8 @@
 		// Load markmap dependencies from CDN.
 		var scripts = [
 			'https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js',
-			'https://cdn.jsdelivr.net/npm/markmap-lib@0.17/dist/browser/index.min.js',
-			'https://cdn.jsdelivr.net/npm/markmap-view@0.17/dist/browser/index.min.js'
+			'https://cdn.jsdelivr.net/npm/markmap-lib@0.18/dist/browser/index.iife.js',
+			'https://cdn.jsdelivr.net/npm/markmap-view@0.18/dist/browser/index.js'
 		];
 
 		loadScriptsSequentially(scripts, 0, function () {
