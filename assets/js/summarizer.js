@@ -477,7 +477,7 @@
 		}
 	}
 
-	/* ── Download mindmap as PNG ─────────────────────────────────────────── */
+	/* ── Download mindmap as SVG ─────────────────────────────────────────── */
 
 	function setupDownload(state, els) {
 		if (!els.downloadBtn || !els.mindmapContainer) return;
@@ -486,54 +486,27 @@
 			var svg = els.mindmapContainer.querySelector('svg');
 			if (!svg) return;
 
-			var label = els.downloadBtn.querySelector('span');
-			if (label) label.textContent = cfg.i18n.downloading || 'Saving...';
-
-			// Serialize SVG with inline styles.
+			// Clone and set proper namespace + white background.
 			var clone = svg.cloneNode(true);
 			clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
+			// Add white background rect as first child.
+			var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			bg.setAttribute('width', '100%');
+			bg.setAttribute('height', '100%');
+			bg.setAttribute('fill', '#ffffff');
+			clone.insertBefore(bg, clone.firstChild);
+
 			var svgData = new XMLSerializer().serializeToString(clone);
-			var svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-			var url = URL.createObjectURL(svgBlob);
+			var blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
 
-			var img = new Image();
-			img.onload = function () {
-				// Use 2x scale for crisp output.
-				var scale = 2;
-				var canvas = document.createElement('canvas');
-				canvas.width = img.width * scale;
-				canvas.height = img.height * scale;
-
-				var ctx = canvas.getContext('2d');
-				ctx.fillStyle = '#ffffff';
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-				ctx.scale(scale, scale);
-				ctx.drawImage(img, 0, 0);
-
-				URL.revokeObjectURL(url);
-
-				canvas.toBlob(function (blob) {
-					var a = document.createElement('a');
-					a.href = URL.createObjectURL(blob);
-					a.download = 'mindmap.png';
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					URL.revokeObjectURL(a.href);
-
-					if (label) label.textContent = cfg.i18n.download || 'Download';
-				}, 'image/png');
-			};
-
-			img.onerror = function () {
-				URL.revokeObjectURL(url);
-				if (label) label.textContent = cfg.i18n.download || 'Download';
-			};
-
-			img.width = svg.clientWidth || svg.getBoundingClientRect().width;
-			img.height = svg.clientHeight || svg.getBoundingClientRect().height;
-			img.src = url;
+			var a = document.createElement('a');
+			a.href = URL.createObjectURL(blob);
+			a.download = 'mindmap.svg';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(a.href);
 		});
 	}
 
