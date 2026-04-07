@@ -71,6 +71,7 @@ class Lumination_Summarizer {
 		'placeholder'    => 'https://example.com/article',
 		'button_text'    => 'Summarise',
 		'summary_length' => 'medium',
+		'heading'        => '',
 	);
 
 	/**
@@ -129,6 +130,7 @@ class Lumination_Summarizer {
 		$lms_placeholder    = sanitize_text_field( $atts['placeholder'] );
 		$lms_button_text    = sanitize_text_field( $atts['button_text'] );
 		$lms_summary_length = sanitize_text_field( $atts['summary_length'] );
+		$lms_heading_tag    = Lumination_Core_Settings::get_heading_tag( sanitize_text_field( $atts['heading'] ) );
 
 		ob_start();
 		include LUMINATION_SUMMARIZER_DIR . 'templates/summarizer-ui.php';

@@ -32,7 +32,7 @@ $lumination_summarizer_show_file = $lumination_summarizer_is_auto || 'file' === 
 	<!-- Header -->
 	<div class="lms-header">
 		<?php if ( ! empty( $lms_title ) ) : ?>
-			<h3 class="lms-title"><?php echo esc_html( $lms_title ); ?></h3>
+			<<?php echo esc_attr( $lms_heading_tag ); ?> class="lms-title"><?php echo esc_html( $lms_title ); ?></<?php echo esc_attr( $lms_heading_tag ); ?>>
 		<?php endif; ?>
 		<?php if ( ! empty( $lms_description ) ) : ?>
 			<p class="lms-description"><?php echo esc_html( $lms_description ); ?></p>
@@ -142,7 +142,7 @@ $lumination_summarizer_show_file = $lumination_summarizer_is_auto || 'file' === 
 	<!-- Output section (hidden initially) -->
 	<div class="lms-output lms-hidden">
 		<div class="lms-output-header">
-			<h4 class="lms-output-title"></h4>
+			<div class="lms-output-title"></div>
 			<div class="lms-output-actions">
 				<button class="lms-copy-btn" title="<?php esc_attr_e( 'Copy to clipboard', 'lumination-summarizer' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
