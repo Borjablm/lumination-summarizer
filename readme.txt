@@ -4,7 +4,7 @@ Tags: summarizer, ai, summary, mindmap, content
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,10 @@ Lumination AI Summarizer provides AI-powered content summarization for WordPress
 4. Use `[lumination_summarizer]` or a preset like `[lumination_summarizer preset="youtube"]` on any page.
 
 == Changelog ==
+
+= 1.1.0 =
+* Migrate to the AI Tutor API v1 /summarize endpoint (requires Lumination Core 1.2.0+).
+* Summaries now run as an asynchronous job with browser-side polling, so long documents no longer time out.
 
 = 1.0.0 =
 * Initial release.

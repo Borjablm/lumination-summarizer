@@ -241,6 +241,7 @@
 			var loadingMsg = state.output === 'mindmap' ? cfg.i18n.generatingMap : cfg.i18n.generating;
 			els.loadingText.textContent = loadingMsg;
 
+			// Submit the job, then poll for completion (summaries are async).
 			fetch(cfg.ajaxUrl, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -256,23 +257,76 @@
 			})
 			.then(function (res) { return res.json(); })
 			.then(function (data) {
-				els.loading.classList.add('lms-hidden');
-				state.isProcessing = false;
-				updateSubmitState(state, els);
-
-				if (data.success) {
-					displayResult(data.data, state, els);
-				} else {
-					showError(data.data && data.data.message ? data.data.message : cfg.i18n.error, els);
+				if (!data.success || !data.data || !data.data.request_id) {
+					finishError(data.data && data.data.message ? data.data.message : cfg.i18n.error, state, els);
+					return;
 				}
+				pollSummaryStatus(data.data.request_id, data.data.output_type, data.data.input_type, state, els);
 			})
 			.catch(function () {
-				els.loading.classList.add('lms-hidden');
-				state.isProcessing = false;
-				updateSubmitState(state, els);
-				showError(cfg.i18n.error, els);
+				finishError(cfg.i18n.error, state, els);
 			});
 		});
+	}
+
+	/**
+	 * Poll a submitted summarization job until it completes.
+	 */
+	function pollSummaryStatus(requestId, outputType, inputType, state, els) {
+		var attempts = 0;
+		var maxAttempts = 40; // 40 × 3s = 2 minutes.
+
+		function poll() {
+			attempts++;
+			if (attempts > maxAttempts) {
+				finishError(cfg.i18n.error, state, els);
+				return;
+			}
+
+			fetch(cfg.ajaxUrl, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: new URLSearchParams({
+					action: 'lumination_summarizer_status',
+					nonce: cfg.nonce,
+					request_id: requestId,
+					output_type: outputType,
+					input_type: inputType,
+					page_url: window.location.href
+				})
+			})
+			.then(function (res) { return res.json(); })
+			.then(function (data) {
+				if (!data.success) {
+					finishError(data.data && data.data.message ? data.data.message : cfg.i18n.error, state, els);
+					return;
+				}
+				if (data.data.status === 'completed') {
+					els.loading.classList.add('lms-hidden');
+					state.isProcessing = false;
+					updateSubmitState(state, els);
+					displayResult(data.data, state, els);
+					return;
+				}
+				// Still processing — poll again.
+				setTimeout(poll, 3000);
+			})
+			.catch(function () {
+				finishError(cfg.i18n.error, state, els);
+			});
+		}
+
+		poll();
+	}
+
+	/**
+	 * Clear the loading state and show an error.
+	 */
+	function finishError(message, state, els) {
+		els.loading.classList.add('lms-hidden');
+		state.isProcessing = false;
+		updateSubmitState(state, els);
+		showError(message, els);
 	}
 
 	/* ── Display result ──────────────────────────────────────────────────── */

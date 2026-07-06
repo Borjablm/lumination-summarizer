@@ -17,7 +17,7 @@
  * @wordpress-plugin
  * Plugin Name:       Lumination AI Summarizer
  * Description:       AI-powered content summarization with support for URLs, text, and PDFs. Generate structured summaries or visual mindmaps. Requires Lumination Core.
- * Version:           1.0.6
+ * Version:           1.1.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Lumination Team
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'LUMINATION_SUMMARIZER_VERSION', '1.0.6' );
+define( 'LUMINATION_SUMMARIZER_VERSION', '1.1.0' );
 define( 'LUMINATION_SUMMARIZER_FILE',    __FILE__ );
 define( 'LUMINATION_SUMMARIZER_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'LUMINATION_SUMMARIZER_URL',     plugin_dir_url( __FILE__ ) );

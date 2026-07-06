@@ -2,9 +2,13 @@
 /**
  * Lumination Summarizer — AJAX Handlers
  *
- * Handles the summarization AJAX request: extracts content from the
- * input source, calls the appropriate Lumination Summarization API
- * endpoint, and returns the result.
+ * The AI Tutor /summarize endpoint is asynchronous and works on an uploaded
+ * document (PDF/DOCX/TXT). This handler therefore:
+ *   1. handle_run    — packages the input as a file and submits the job.
+ *   2. handle_status — polled from the browser until the job completes.
+ *
+ * Text and URL inputs are wrapped as a .txt file so the same document-based
+ * endpoint can serve every input mode.
  *
  * @package    LuminationSummarizer
  * @since      1.0.0
@@ -19,17 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Lumination_Summarizer_Ajax {
 
 	/**
-	 * Map output types to API endpoint paths.
-	 *
-	 * @var array
-	 */
-	private static $endpoints = array(
-		'sections' => '/lumination-ai/api/v1/features/summarization/sections:generate',
-		'raw'      => '/lumination-ai/api/v1/features/summarization/raw:generate',
-		'mindmap'  => '/lumination-ai/api/v1/features/summarization/mindmap:generate',
-	);
-
-	/**
 	 * Maximum context length in characters.
 	 */
 	const MAX_CONTEXT_LENGTH = 50000;
@@ -40,10 +33,13 @@ class Lumination_Summarizer_Ajax {
 	public static function register() {
 		add_action( 'wp_ajax_lumination_summarizer_run',        array( __CLASS__, 'handle_run' ) );
 		add_action( 'wp_ajax_nopriv_lumination_summarizer_run', array( __CLASS__, 'handle_run' ) );
+
+		add_action( 'wp_ajax_lumination_summarizer_status',        array( __CLASS__, 'handle_status' ) );
+		add_action( 'wp_ajax_nopriv_lumination_summarizer_status', array( __CLASS__, 'handle_status' ) );
 	}
 
 	/**
-	 * Handle the summarization AJAX request.
+	 * Submit a summarization job. Returns a request_id for the browser to poll.
 	 */
 	public static function handle_run() {
 		check_ajax_referer( 'lumination_summarizer_nonce', 'nonce' );
@@ -63,7 +59,6 @@ class Lumination_Summarizer_Ajax {
 		$input_mode     = isset( $_POST['input_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['input_mode'] ) ) : '';
 		$output_type    = isset( $_POST['output_type'] ) ? sanitize_text_field( wp_unslash( $_POST['output_type'] ) ) : 'sections';
 		$summary_length = isset( $_POST['summary_length'] ) ? sanitize_text_field( wp_unslash( $_POST['summary_length'] ) ) : 'medium';
-		$page_url       = isset( $_POST['page_url'] ) ? esc_url_raw( wp_unslash( $_POST['page_url'] ) ) : '';
 
 		$allowed_modes   = array( 'url', 'text', 'file' );
 		$allowed_outputs = array( 'sections', 'raw', 'mindmap' );
@@ -79,9 +74,10 @@ class Lumination_Summarizer_Ajax {
 			$summary_length = 'medium';
 		}
 
-		// ── Extract context based on input mode ──────────────────────────────
+		// ── Build the document payload based on input mode ───────────────────
 
-		$context    = '';
+		$file_b64   = '';
+		$file_name  = 'content.txt';
 		$input_type = 'text'; // Analytics input_type.
 
 		switch ( $input_mode ) {
@@ -90,8 +86,11 @@ class Lumination_Summarizer_Ajax {
 				if ( empty( $url ) || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
 					wp_send_json_error( array( 'message' => __( 'Please enter a valid URL.', 'lumination-summarizer' ) ) );
 				}
-				$context    = self::extract_from_url( $url );
-				$input_type = 'text';
+				$context = self::extract_from_url( $url );
+				if ( is_wp_error( $context ) ) {
+					wp_send_json_error( array( 'message' => $context->get_error_message() ) );
+				}
+				$file_b64 = base64_encode( $context ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- packaging plain text as a .txt upload, not obfuscation.
 				break;
 
 			case 'text':
@@ -99,79 +98,100 @@ class Lumination_Summarizer_Ajax {
 				if ( empty( $raw_text ) ) {
 					wp_send_json_error( array( 'message' => __( 'Please enter some text to summarise.', 'lumination-summarizer' ) ) );
 				}
-				$context    = mb_substr( $raw_text, 0, self::MAX_CONTEXT_LENGTH );
-				$input_type = 'text';
+				$context  = mb_substr( $raw_text, 0, self::MAX_CONTEXT_LENGTH );
+				$file_b64 = base64_encode( $context ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- packaging plain text as a .txt upload, not obfuscation.
 				break;
 
 			case 'file':
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- base64 data cannot be unslashed/sanitized with sanitize_text_field; sanitize_base64() is applied below.
-				$file_data = isset( $_POST['input_value'] ) ? $_POST['input_value'] : '';
-				if ( empty( $file_data ) ) {
-					wp_send_json_error( array( 'message' => __( 'No file data provided.', 'lumination-summarizer' ) ) );
-				}
-				$file_data = Lumination_Core_Security::sanitize_base64( $file_data );
-				if ( empty( $file_data ) ) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- base64 data; sanitize_base64() applied below.
+				$raw_file = isset( $_POST['input_value'] ) ? $_POST['input_value'] : '';
+				$file_b64 = Lumination_Core_Security::sanitize_base64( $raw_file );
+				if ( empty( $file_b64 ) ) {
 					wp_send_json_error( array( 'message' => __( 'Invalid file data.', 'lumination-summarizer' ) ) );
 				}
-				$context    = self::extract_from_pdf( $file_data );
+				$file_name  = 'document.pdf';
 				$input_type = 'pdf';
 				break;
 		}
 
-		if ( is_wp_error( $context ) ) {
-			wp_send_json_error( array( 'message' => $context->get_error_message() ) );
-		}
+		// ── Submit the job ───────────────────────────────────────────────────
 
-		if ( empty( $context ) ) {
-			wp_send_json_error( array( 'message' => __( 'Could not extract any text from the provided input.', 'lumination-summarizer' ) ) );
-		}
-
-		// ── Call the summarisation API ────────────────────────────────────────
-
-		$endpoint = self::$endpoints[ $output_type ];
-
-		$api_body = array(
-			'context'          => $context,
-			'language_code'    => 'default',
-			'summary_settings' => $summary_length,
+		$submit = Lumination_Core_API::submit(
+			'/summarize',
+			array(
+				'file_b64'       => $file_b64,
+				'file_name'      => $file_name,
+				'summary_length' => $summary_length,
+			),
+			'lumination-summarizer'
 		);
 
-		$result = Lumination_Core_API::request( $endpoint, $api_body, 'lumination-summarizer' );
-
-		if ( is_wp_error( $result ) ) {
-			Lumination_Core_Security::log_event( 'Summarizer API error', array( 'error' => $result->get_error_message() ) );
-			wp_send_json_error( array( 'message' => __( 'Failed to generate summary. Please try again.', 'lumination-summarizer' ) ) );
+		if ( is_wp_error( $submit ) ) {
+			Lumination_Core_Security::log_event( 'Summarizer submit error', array( 'error' => $submit->get_error_message() ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to start the summary. Please try again.', 'lumination-summarizer' ) ) );
 		}
 
-		// ── Extract response fields ──────────────────────────────────────────
-
-		$title   = '';
-		$summary = '';
-
-		if ( 'mindmap' === $output_type ) {
-			$summary = isset( $result['mindmap'] ) ? $result['mindmap'] : '';
-			$title   = isset( $result['title'] ) ? $result['title'] : __( 'Mindmap', 'lumination-summarizer' );
-		} else {
-			$summary = isset( $result['summary'] ) ? $result['summary'] : '';
-			$title   = isset( $result['title'] ) ? $result['title'] : '';
+		if ( empty( $submit['request_id'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'The API did not accept the request. Please try again.', 'lumination-summarizer' ) ) );
 		}
+
+		wp_send_json_success( array(
+			'request_id'  => $submit['request_id'],
+			'output_type' => $output_type,
+			'input_type'  => $input_type,
+		) );
+	}
+
+	/**
+	 * Poll a submitted summarization job.
+	 */
+	public static function handle_status() {
+		check_ajax_referer( 'lumination_summarizer_nonce', 'nonce' );
+
+		$request_id  = isset( $_POST['request_id'] ) ? sanitize_text_field( wp_unslash( $_POST['request_id'] ) ) : '';
+		$output_type = isset( $_POST['output_type'] ) ? sanitize_text_field( wp_unslash( $_POST['output_type'] ) ) : 'sections';
+		$input_type  = isset( $_POST['input_type'] ) ? sanitize_text_field( wp_unslash( $_POST['input_type'] ) ) : 'text';
+		$page_url    = isset( $_POST['page_url'] ) ? esc_url_raw( wp_unslash( $_POST['page_url'] ) ) : '';
+
+		if ( empty( $request_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Missing request reference.', 'lumination-summarizer' ) ) );
+		}
+
+		$job = Lumination_Core_API::poll( $request_id );
+		if ( is_wp_error( $job ) ) {
+			wp_send_json_error( array( 'message' => __( 'Failed to check the summary status.', 'lumination-summarizer' ) ) );
+		}
+
+		$status = isset( $job['status'] ) ? $job['status'] : 'processing';
+
+		if ( 'failed' === $status ) {
+			$msg = ( ! empty( $job['error'] ) && is_string( $job['error'] ) ) ? $job['error'] : __( 'The summary could not be generated.', 'lumination-summarizer' );
+			wp_send_json_error( array( 'message' => $msg ) );
+		}
+
+		if ( 'completed' !== $status ) {
+			wp_send_json_success( array( 'status' => 'processing' ) );
+		}
+
+		// Completed — extract the summary.
+		$summary = isset( $job['result']['summary'] ) ? $job['result']['summary'] : '';
+		$title   = isset( $job['result']['title'] ) ? $job['result']['title'] : '';
 
 		if ( empty( $summary ) ) {
 			wp_send_json_error( array( 'message' => __( 'The API returned an empty result.', 'lumination-summarizer' ) ) );
 		}
 
-		// ── Log analytics ────────────────────────────────────────────────────
-
 		Lumination_Core_Analytics::log_usage(
 			'summarizer',
 			$page_url,
-			isset( $result['token_count_input'] ) ? (int) $result['token_count_input'] : 0,
-			isset( $result['token_count_output'] ) ? (int) $result['token_count_output'] : 0,
-			isset( $result['credits_charged'] ) ? (float) $result['credits_charged'] : 0,
+			isset( $job['input_tokens'] ) ? (int) $job['input_tokens'] : 0,
+			isset( $job['output_tokens'] ) ? (int) $job['output_tokens'] : 0,
+			isset( $job['credits_charged'] ) ? (float) $job['credits_charged'] : 0,
 			$input_type
 		);
 
 		wp_send_json_success( array(
+			'status'      => 'completed',
 			'title'       => $title,
 			'summary'     => $summary,
 			'output_type' => $output_type,
@@ -221,36 +241,10 @@ class Lumination_Summarizer_Ajax {
 		$text = preg_replace( '/\s+/', ' ', $text );
 		$text = trim( $text );
 
+		if ( empty( $text ) ) {
+			return new \WP_Error( 'empty_body', __( 'Could not extract any readable text from the URL.', 'lumination-summarizer' ) );
+		}
+
 		return mb_substr( $text, 0, self::MAX_CONTEXT_LENGTH );
-	}
-
-	/**
-	 * Extract text from a base64-encoded PDF via the material-to-text endpoint.
-	 *
-	 * @param  string $base64_data Sanitised base64 string.
-	 * @return string|WP_Error Extracted text or error.
-	 */
-	private static function extract_from_pdf( $base64_data ) {
-		$result = Lumination_Core_API::request(
-			'/api/material-to-text',
-			array(
-				'content'      => $base64_data,
-				'content_type' => 'application/pdf',
-			),
-			'lumination-summarizer-extract'
-		);
-
-		if ( is_wp_error( $result ) ) {
-			return new \WP_Error( 'pdf_extract_failed', __( 'Could not extract text from the PDF.', 'lumination-summarizer' ) );
-		}
-
-		if ( isset( $result['success'] ) && false === $result['success'] ) {
-			$err_msg = isset( $result['error'] ) ? $result['error'] : __( 'PDF processing failed.', 'lumination-summarizer' );
-			return new \WP_Error( 'pdf_extract_failed', $err_msg );
-		}
-
-		$text = isset( $result['text'] ) ? $result['text'] : '';
-
-		return mb_substr( trim( $text ), 0, self::MAX_CONTEXT_LENGTH );
 	}
 }
