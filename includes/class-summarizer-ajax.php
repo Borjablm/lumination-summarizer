@@ -121,7 +121,8 @@ class Lumination_Summarizer_Ajax {
 			array(
 				'file_b64'       => $file_b64,
 				'file_name'      => $file_name,
-				'summary_length' => $summary_length,
+				'output_type'    => $output_type,    // 'sections' | 'raw' | 'mindmap'
+				'summary_length' => $summary_length, // only applies to 'sections'
 			),
 			'lumination-summarizer'
 		);
@@ -173,9 +174,16 @@ class Lumination_Summarizer_Ajax {
 			wp_send_json_success( array( 'status' => 'processing' ) );
 		}
 
-		// Completed — extract the summary.
-		$summary = isset( $job['result']['summary'] ) ? $job['result']['summary'] : '';
-		$title   = isset( $job['result']['title'] ) ? $job['result']['title'] : '';
+		// Completed — extract the output. Mindmaps come back in a `mindmap` field
+		// (markdown); sections/raw come back in `summary`.
+		$data = isset( $job['result'] ) ? $job['result'] : array();
+		if ( 'mindmap' === $output_type ) {
+			$summary = isset( $data['mindmap'] ) ? $data['mindmap'] : '';
+			$title   = isset( $data['title'] ) ? $data['title'] : __( 'Mindmap', 'lumination-summarizer' );
+		} else {
+			$summary = isset( $data['summary'] ) ? $data['summary'] : '';
+			$title   = isset( $data['title'] ) ? $data['title'] : '';
+		}
 
 		if ( empty( $summary ) ) {
 			wp_send_json_error( array( 'message' => __( 'The API returned an empty result.', 'lumination-summarizer' ) ) );
